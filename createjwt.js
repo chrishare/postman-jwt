@@ -57,8 +57,9 @@ var data = {
 
 data = addIAT(data);
 
+// signingKey is an environmental variable on the collection that contains the private key with -----BEGIN RSA PRIVATE KEY----- etc included
 var keyFileContent = pm.variables.get('signingKey');
-console.log('keyFileContent is ' + keyFileContent);
+//console.log('keyFileContent is ' + keyFileContent);
 
 // encode header
 var stringifiedHeader = JSON.stringify(header);
@@ -71,6 +72,8 @@ var sJWT = KJUR.jws.JWS.sign("RS256", stringifiedHeader, stringifiedData, keyFil
 
 console.log("sJWT is " + sJWT);
 
-
+// Here we set the header. In your API definition, you want to add a header with name {{key}} and value {{value}}
 pm.variables.set('key', 'Authorisation');
 pm.variables.set('value', 'Bearer ' + sJWT);
+
+// When run as a pre-test script, this should succeed and print out the JWT, and in the developer tools under view, you should see the header added to the raw request as needed
